@@ -47,6 +47,7 @@ func init() {
 	// 获取
 	etcdEndpoints := os.Getenv("ETCD_ENDPOINTS")
 	adEtcdEndpoints := os.Getenv("AD_ETCD_ENDPOINTS")
+
 	Systemd.unit = SystemdUnit{
 		Unit: UnitSection{
 			Description:   "My Application",
@@ -58,8 +59,7 @@ func init() {
 			Restart:    "always",
 			RestartSec: "3s",
 			Environment: []string{
-				"APP_ENV=prod",
-				"MYAPP_ENV=production",
+				fmt.Sprintf("APP_ENV=%s", os.Getenv("APP_ENV")),
 				fmt.Sprintf("ETCD_ENDPOINTS=%s", etcdEndpoints),
 				fmt.Sprintf("AD_ETCD_ENDPOINTS=%s", adEtcdEndpoints),
 			},
