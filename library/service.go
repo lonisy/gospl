@@ -36,6 +36,8 @@ func Watcher(sig syscall.Signal) {
 			if !ok {
 				return
 			}
+			log.Println(event.Name)
+			log.Println(event.String())
 			if event.Name == execPath && event.Op&(fsnotify.Write|fsnotify.Create|fsnotify.Remove|fsnotify.Rename) != 0 {
 				syscall.Kill(os.Getpid(), sig)
 				return
