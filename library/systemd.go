@@ -46,7 +46,6 @@ var Systemd SystemdService
 func init() {
 	// 获取
 	etcdEndpoints := os.Getenv("ETCD_ENDPOINTS")
-	adEtcdEndpoints := os.Getenv("AD_ETCD_ENDPOINTS")
 
 	Systemd.unit = SystemdUnit{
 		Unit: UnitSection{
@@ -56,12 +55,11 @@ func init() {
 		},
 		Service: ServiceSection{
 			Type:       "simple",
-			Restart:    "always",
+			Restart:    "always", // on-failure always
 			RestartSec: "3s",
 			Environment: []string{
 				fmt.Sprintf("APP_ENV=%s", os.Getenv("APP_ENV")),
 				fmt.Sprintf("ETCD_ENDPOINTS=%s", etcdEndpoints),
-				fmt.Sprintf("AD_ETCD_ENDPOINTS=%s", adEtcdEndpoints),
 			},
 			WorkingDirectory: "/data/app/myapp",
 			ExecStart:        "/usr/local/bin/myapp",
@@ -92,6 +90,7 @@ func GenerateServiceFile(unit SystemdUnit, filePath string) error {
 	for _, env := range unit.Service.Environment {
 		sb.WriteString(fmt.Sprintf("Environment=%s\n", env))
 	}
+	sb.WriteString(fmt.Sprintf("Environment=HOME=%s\n", unit.Service.WorkingDirectory))
 	sb.WriteString(fmt.Sprintf("WorkingDirectory=%s\n", unit.Service.WorkingDirectory))
 	sb.WriteString(fmt.Sprintf("ExecStart=%s\n", unit.Service.ExecStart))
 	sb.WriteString(fmt.Sprintf("ExecReload=%s\n", unit.Service.ExecReload))

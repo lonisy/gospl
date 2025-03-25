@@ -9,6 +9,9 @@ import (
 	"syscall"
 )
 
+//	go library.Watcher(syscall.SIGTERM)
+//  go library.Watcher(syscall.SIGHUP)
+
 func Watcher(sig syscall.Signal) {
 	execPath, err := os.Executable()
 	if err != nil {
